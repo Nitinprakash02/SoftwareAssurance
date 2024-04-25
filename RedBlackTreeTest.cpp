@@ -3,33 +3,26 @@ using namespace deepstate;
 
 #include "RedBlackTree.h"
 
-void randomInsertTest(RedBlackTree& tree) {
-    int numInserts = DeepState_IntInRange(1, 20);  // Inserts 1 to 20 elements
-    for (int i = 0; i < numInserts; i++) {
+void randomInsertDeleteTest(RedBlackTree& tree) {
+    int numOperations = DeepState_IntInRange(1, 30);  // Performs 1 to 30 operations
+    for (int i = 0; i < numOperations; i++) {
+        int operation = DeepState_IntInRange(0, 1);  // Randomly decide operation: 0 for insert, 1 for delete
         int val = DeepState_Int();
-        LOG(INFO) << "Inserting value: " << val;
-        tree.insert(val);
-        ASSERT(tree.validateRBProperties()) << "Red-Black property violated after insertion!";
+        if (operation == 0) {
+            LOG(INFO) << "Inserting value: " << val;
+            tree.insert(val);
+        } else {
+            LOG(INFO) << "Deleting value: " << val;
+            tree.deleteNode(val);
+        }
+        ASSERT(tree.validateRBProperties()) << "Red-Black property violated after operation!";
     }
+	tree.printTree();
+	LOG(INFO)  << "\nIn-order traversal of the tree:\n";
+    tree.inorder();
 }
 
-void randomDeleteTest(RedBlackTree& tree) {
-    int numDeletes = DeepState_IntInRange(1, 10);  // Deletes 1 to 10 elements
-    for (int i = 0; i < numDeletes; i++) {
-        int val = DeepState_Int();
-        LOG(INFO) << "Deleting value: " << val;
-        tree.deleteNode(val);
-        ASSERT(tree.validateRBProperties()) << "Red-Black property violated after deletion!";
-    }
-}
-
-TEST(RedBlackTree, RandomInserts) {
+TEST(RedBlackTree, MixedInsertDelete) {
     RedBlackTree tree;
-    randomInsertTest(tree);
-}
-
-TEST(RedBlackTree, InsertThenDelete) {
-    RedBlackTree tree;
-    randomInsertTest(tree);
-    randomDeleteTest(tree);
+    randomInsertDeleteTest(tree);
 }
