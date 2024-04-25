@@ -3,26 +3,33 @@ using namespace deepstate;
 
 #include "RedBlackTree.h"
 
-void randomInsertDeleteTest(RedBlackTree& tree) {
-    int numOperations = DeepState_IntInRange(1, 30);  // Performs 1 to 30 operations
-    for (int i = 0; i < numOperations; i++) {
-        int operation = DeepState_IntInRange(0, 1);  // Randomly decide operation: 0 for insert, 1 for delete
-        int val = DeepState_Int();
-        if (operation == 0) {
-            LOG(INFO) << "Inserting value: " << val;
-            tree.insert(val);
-        } else {
-            LOG(INFO) << "Deleting value: " << val;
-            tree.deleteNode(val);
-        }
-        ASSERT(tree.validateRBProperties()) << "Red-Black property violated after operation!";
-    }
-	tree.printTree();
-	LOG(INFO)  << "\nIn-order traversal of the tree:\n";
-    tree.inorder();
-}
-
-TEST(RedBlackTree, MixedInsertDelete) {
+TEST(RedBlackTree, InsertDeleteTest) {
     RedBlackTree tree;
-    randomInsertDeleteTest(tree);
+
+    // Perform a series of random insertions and deletions
+    int numOperations = DeepState_IntInRange(1, 50);  // Perform between 1 and 50 operations
+
+    for (int i = 0; i < numOperations; i++) {
+        int operation = DeepState_IntInRange(0, 1);  // Decide operation: 0 for insert, 1 for delete
+        int value = DeepState_Int();  // Generate a random value to insert or delete
+
+        if (operation == 0) {
+            LOG(INFO) << "Inserting value: " << value;
+            tree.insert(value);
+        } else {
+            LOG(INFO) << "Deleting value: " << value;
+            tree.deleteNode(value);
+        }
+
+        // Validate the Red-Black properties after each operation
+        ASSERT(tree.validateRBProperties()) << "Red-Black properties violated!";
+    }
+
+    // Optional: Output the final structure of the tree for debugging
+    LOG(INFO) << "Final structure of the Red-Black Tree:";
+    tree.printTree();
+
+    // Optional: Check the in-order traversal output of the tree
+    LOG(INFO) << "In-order traversal of the tree:";
+    tree.inorder();
 }
