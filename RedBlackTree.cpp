@@ -357,37 +357,3 @@ bool validateRedBlackTree(RedBlackTree& tree) {
            tree.getRoot()->color == 1 &&  // root must be black
            validateRBTreeProperties(tree.getRoot(), 0, pathBlackCount);
 }
-
-/*
-int main() {
-    RedBlackTree bst;
-    // Inserting nodes
-    bst.insert(8);
-    bst.insert(18);
-    bst.insert(5);
-    bst.insert(15);
-    bst.insert(17);
-    bst.insert(25);
-    bst.insert(40);
-    bst.insert(80);
-
-    // Printing the Red-Black Tree structure
-    std::cout << "Initial Red-Black Tree:" << std::endl;
-    bst.printTree();
-
-    // In-order traversal of the tree
-    std::cout << "Inorder traversal before deletion:" << std::endl;
-    bst.inorder();
-
-    // Deleting a node
-    bst.deleteNode(18);
-    std::cout << "\nRed-Black Tree after deleting 18:" << std::endl;
-    bst.printTree();
-
-    // In-order traversal after deletion
-    std::cout << "Inorder traversal after deletion:" << std::endl;
-    bst.inorder();
-
-    return 0;
-}
-*/
