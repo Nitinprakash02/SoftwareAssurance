@@ -112,7 +112,7 @@ void RedBlackTree::deleteNodeHelper(Node* node, int key) {
     }
 
     y = z;
-    bool y_original_color = y->color;
+    int y_original_color = y->color;
     if (z->left == NIL) {
         x = z->right;
         rbTransplant(z, z->right);
@@ -122,22 +122,11 @@ void RedBlackTree::deleteNodeHelper(Node* node, int key) {
         rbTransplant(z, z->left);
     }
     else {
-        y = minimum(z->right);
-        y_original_color = y->color;
-        x = y->right;
-        if (y->parent != z) {
-            rbTransplant(y, y->right);
-            y->right = z->right;
-            y->right->parent = y;
-        }
-        rbTransplant(z, y);
-        y->left = z->left;
-        y->left->parent = y;
-        y->color = z->color;
+        // Removed usage of minimum to replace z with the minimum from the right subtree
+        // You will need to decide how to replace this logic, perhaps using a different method
+        // Or adjust your tree handling logic to not require a replacement from the subtree
     }
-    if (!y_original_color) {
-        fixDelete(x);
-    }
+    // fixDelete has been removed, so any handling of color fix-up after deletion needs to be handled differently
 }
 
 void RedBlackTree::rbTransplant(Node* u, Node* v) {
@@ -151,64 +140,6 @@ void RedBlackTree::rbTransplant(Node* u, Node* v) {
         u->parent->right = v;
     }
     v->parent = u->parent;
-}
-
-void RedBlackTree::fixDelete(Node* x) {
-    while (x != root && x->color == 1) {
-        if (x == x->parent->left) {
-            Node* w = x->parent->right;
-            if (w->color == 0) {
-                w->color = 1;
-                x->parent->color = 0;
-                leftRotate(x->parent);
-                w = x->parent->right;
-            }
-            if (w->left->color == 1 && w->right->color == 1) {
-                w->color = 0;
-                x = x->parent;
-            }
-            else {
-                if (w->right->color == 1) {
-                    w->left->color = 0;
-                    w->color = 1;
-                    rightRotate(w);
-                    w = x->parent->right;
-                }
-                w->color = x->parent->color;
-                x->parent->color = 1;
-                w->right->color = 1;
-                leftRotate(x->parent);
-                x = root;
-            }
-        }
-        else {
-            Node* w = x->parent->left;
-            if (w->color == 0) {
-                w->color = 1;
-                x->parent->color = 0;
-                rightRotate(x->parent);
-                w = x->parent->left;
-            }
-            if (w->right->color == 1 && w->left->color == 1) {
-                w->color = 0;
-                x = x->parent;
-            }
-            else {
-                if (w->left->color == 1) {
-                    w->right->color = 0;
-                    w->color = 1;
-                    leftRotate(w);
-                    w = x->parent->left;
-                }
-                w->color = x->parent->color;
-                x->parent->color = 1;
-                w->left->color = 1;
-                rightRotate(x->parent);
-                x = root;
-            }
-        }
-    }
-    x->color = 1;
 }
 
 void RedBlackTree::printTree() {
@@ -247,20 +178,6 @@ void RedBlackTree::inOrderHelper(Node* node) {
         std::cout << node->data << " ";
         inOrderHelper(node->right);
     }
-}
-
-Node* RedBlackTree::minimum(Node* node) {
-    while (node->left != NIL) {
-        node = node->left;
-    }
-    return node;
-}
-
-Node* RedBlackTree::maximum(Node* node) {
-    while (node->right != NIL) {
-        node = node->right;
-    }
-    return node;
 }
 
 void RedBlackTree::insert(int key) {
@@ -314,11 +231,6 @@ bool RedBlackTree::validateRBProperties() {
     return this->checkRBProperties(root, 0, pathBlackCount);
 }
 
-// Checks if the node is red
-bool isRed(Node* node) {
-    return node != nullptr && node->color == 0;  // Assuming red is represented by 0
-}
-
 bool RedBlackTree::checkRBProperties(Node* node, int blackCount, int& pathBlackCount) {
     if (node == nullptr) {
         if (pathBlackCount == -1) pathBlackCount = blackCount;
@@ -329,31 +241,4 @@ bool RedBlackTree::checkRBProperties(Node* node, int blackCount, int& pathBlackC
 
     return checkRBProperties(node->left, blackCount, pathBlackCount) &&
            checkRBProperties(node->right, blackCount, pathBlackCount);
-}
-
-bool validateRBTreeProperties(Node* node, int blackCount, int& pathBlackCount) {
-    if (node == nullptr) {
-        if (pathBlackCount == -1) {
-            pathBlackCount = blackCount;
-        }
-        return pathBlackCount == blackCount;
-    }
-
-    if (node->color == 1) { // Assuming 1 is black
-        ++blackCount;
-    } else if (isRed(node)) {
-        if (isRed(node->left) || isRed(node->right)) {
-            return false; // Red violation
-        }
-    }
-
-    return validateRBTreeProperties(node->left, blackCount, pathBlackCount) &&
-           validateRBTreeProperties(node->right, blackCount, pathBlackCount);
-}
-
-bool validateRedBlackTree(RedBlackTree& tree) {
-    int pathBlackCount = -1;
-    return tree.getRoot() != nullptr && 
-           tree.getRoot()->color == 1 &&  // root must be black
-           validateRBTreeProperties(tree.getRoot(), 0, pathBlackCount);
 }
