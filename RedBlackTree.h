@@ -25,8 +25,6 @@ private:
     void fixDelete(Node* x);
     void rbTransplant(Node* u, Node* v);
     void deleteNodeHelper(Node* node, int key);
-    Node* minimum(Node* node);
-    Node* maximum(Node* node);
     void inOrderHelper(Node* node);
     void printHelper(Node* root, std::string indent, bool last);
 	bool checkRBProperties(Node* node, int blackCount, int& pathBlackCount);
@@ -39,6 +37,8 @@ public:
     void inorder();
 	bool validateRBProperties();
 	Node* getRoot() const { return root; }
+	Node* minimum(Node* node);
+	Node* maximum(Node* node);
 };
 
 #endif // RED_BLACK_TREE_H
